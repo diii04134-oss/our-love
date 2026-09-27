@@ -1,0 +1,230 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: #0d1117;
+  color: #c9d1d9;
+  line-height: 1.5;
+  padding: 24px;
+}
+
+/* ── Заголовок репозитория ────────────────────────── */
+.repo-header {
+  max-width: 800px;
+  margin: 0 auto 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #30363d;
+}
+
+.repo-title {
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+.repo-owner { color: #58a6ff; }
+.repo-name  { color: #58a6ff; font-weight: 600; }
+.badge {
+  font-size: 12px;
+  border: 1px solid #30363d;
+  border-radius: 20px;
+  padding: 2px 10px;
+  margin-left: 8px;
+  color: #8b949e;
+}
+
+.repo-desc {
+  color: #8b949e;
+  margin-bottom: 12px;
+}
+
+.repo-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 14px;
+  color: #8b949e;
+}
+.repo-stats strong { color: #c9d1d9; }
+
+/* ── Список коммитов ───────────────────────────────── */
+.commits {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.commits-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #30363d;
+  color: #8b949e;
+  font-size: 14px;
+}
+.branch {
+  font-family: monospace;
+  background: #161b22;
+  padding: 2px 10px;
+  border-radius: 6px;
+}
+
+#commit-list { list-style: none; }
+
+.commit {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid #21262d;
+  transition: background 0.15s;
+}
+.commit:hover { background: #161b22; }
+
+.commit-icon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #21262d;
+  font-size: 16px;
+}
+.commit-icon.merge { background: #238636; }
+
+.commit-body { flex: 1; }
+.commit-msg {
+  font-size: 15px;
+  color: #c9d1d9;
+  margin-bottom: 4px;
+}
+.commit-type {
+  font-weight: 600;
+  font-family: monospace;
+}
+.commit-type.feat     { color: #3fb950; }
+.commit-type.chore    { color: #8b949e; }
+.commit-type.refactor { color: #d29922; }
+.commit-type.docs     { color: #58a6ff; }
+.commit-type.merge    { color: #a371f7; }
+
+.tag {
+  display: inline-block;
+  background: #238636;
+  color: #fff;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-right: 6px;
+  font-family: monospace;
+  vertical-align: middle;
+}
+
+.commit-meta {
+  font-size: 12px;
+  color: #8b949e;
+  font-family: monospace;
+}
+
+/* ── Contribution graph ────────────────────────────── */
+.contribution {
+  max-width: 800px;
+  margin: 48px auto 0;
+  padding-top: 24px;
+  border-top: 1px solid #30363d;
+}
+.contribution h2 {
+  font-size: 18px;
+  margin-bottom: 16px;
+  color: #c9d1d9;
+}
+
+.contrib-grid {
+  display: grid;
+  grid-template-columns: repeat(53, 1fr);
+  gap: 3px;
+  max-width: 100%;
+}
+.contrib-grid .cell {
+  aspect-ratio: 1;
+  border-radius: 2px;
+  background: #161b22;
+}
+.contrib-grid .lvl-0 { background: #161b22; }
+.contrib-grid .lvl-1 { background: #0e4429; }
+.contrib-grid .lvl-2 { background: #006d32; }
+.contrib-grid .lvl-3 { background: #26a641; }
+.contrib-grid .lvl-4 { background: #39d353; }
+
+.contrib-legend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  font-size: 12px;
+  color: #8b949e;
+}
+.contrib-legend .cell {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+/* ── Diff block ────────────────────────────────────── */
+.diff-block {
+  max-width: 800px;
+  margin: 48px auto 0;
+  padding-top: 24px;
+  border-top: 1px solid #30363d;
+}
+.diff-block h2 {
+  font-size: 18px;
+  margin-bottom: 12px;
+  color: #c9d1d9;
+}
+.diff {
+  background: #161b22;
+  padding: 16px;
+  border-radius: 8px;
+  font-family: monospace;
+  font-size: 13px;
+  overflow-x: auto;
+  line-height: 1.6;
+}
+.diff .meta  { display: block; color: #8b949e; }
+.diff .minus { display: block; color: #f85149; }
+.diff .plus  { display: block; color: #3fb950; }
+
+/* ── README ────────────────────────────────────────── */
+.readme {
+  max-width: 800px;
+  margin: 48px auto 0;
+  padding-top: 24px;
+  border-top: 1px solid #30363d;
+}
+.readme h2 {
+  font-size: 18px;
+  margin-bottom: 12px;
+  color: #c9d1d9;
+}
+.readme p {
+  color: #8b949e;
+  margin-bottom: 8px;
+}
+.readme code {
+  background: #161b22;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #ff7b72;
+}
+.readme strong { color: #c9d1d9; }
+.readme em { color: #c9d1d9; }
+
+/* ── Мобильная адаптация ───────────────────────────── */
+@media (max-width: 640px) {
+  body { padding: 16px; }
+  .repo-title { font-size: 18px; }
+  .repo-stats { gap: 10px; font-size: 13px; }
+  .contrib-grid { gap: 2px; }
+}

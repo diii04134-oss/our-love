@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>our-love · commits</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="repo-header">
+    <div class="repo-title">
+      <span class="repo-owner">us</span> / <span class="repo-name">our-love</span>
+      <span class="badge">Public</span>
+    </div>
+    <p class="repo-desc">Три года совместной разработки. Без конфликтов (почти).</p>
+    <div class="repo-stats">
+      <span>🔀 <strong id="commits-count">0</strong> commits</span>
+      <span>🌿 <strong>2</strong> branches</span>
+      <span>❤️ <strong>∞</strong> love</span>
+      <span>⭐ <strong id="days-count">0</strong> days</span>
+    </div>
+  </header>
+
+  <main class="commits">
+    <div class="commits-header">
+      <span>Все коммиты</span>
+      <span class="branch">branch: main</span>
+    </div>
+    <ul id="commit-list"></ul>
+  </main>
+
+  <section class="contribution">
+    <h2>Contribution activity</h2>
+    <div id="contrib-grid" class="contrib-grid"></div>
+    <p class="contrib-legend">
+      <span>Меньше</span>
+      <span class="cell lvl-0"></span>
+      <span class="cell lvl-1"></span>
+      <span class="cell lvl-2"></span>
+      <span class="cell lvl-3"></span>
+      <span class="cell lvl-4"></span>
+      <span>Больше</span>
+    </p>
+  </section>
+
+  <section class="diff-block">
+    <h2>diff.patch</h2>
+    <pre class="diff"><span class="meta">diff --git a/life.txt b/life.txt</span>
+<span class="meta">--- a/life.txt (single)</span>
+<span class="meta">+++ b/life.txt (together)</span>
+<span class="meta">@@ -1,5 +1,5 @@</span>
+<span class="minus">- status: single</span>
+<span class="plus">+ status: taken (and happy)</span>
+<span class="minus">- coffee_cups_per_day: 1</span>
+<span class="plus">+ coffee_cups_per_day: 2</span>
+<span class="minus">- reasons_to_smile: few</span>
+<span class="plus">+ reasons_to_smile: infinite</span>
+<span class="plus">+ person_to_come_home_to: 1</span>
+</pre>
+  </section>
+
+  <footer class="readme">
+    <h2>README.md</h2>
+    <p>Проект <code>our-love</code> — совместная разработка двух программистов.</p>
+    <p>Стек: <em>доверие, юмор, поддержка, любовь</em>.</p>
+    <p>Лицензия: <strong>MIT</strong> (<em>My Infinite Tenderness</em>).</p>
+    <p>Контрибьюторы: <strong>ты</strong> и <strong>я</strong>.</p>
+  </footer>
+
+  <script>
+    // ═══════════════════════════════════════════════════════
+    //  1. ДАННЫЕ — меняй здесь
+    // ═══════════════════════════════════════════════════════
+
+    const START_DATE = "2023-10-16"; // дата начала отношений
+
+    const commits = [
+      // feat — хорошие события
+      { hash: "a1b2c3d", type: "feat",     date: "2023-09-01", msg: "initial commit: познакомились" },
+      { hash: "b2c3d4e", type: "feat",     date: "2023-10-14", msg: "первое свидание" },
+      { hash: "c3d4e5f", type: "feat",     date: "2023-10-21", msg: "первый поцелуй на набережной" },
+      { hash: "d4e5f6a", type: "feat",     date: "2023-10-16", msg: "официально начали встречаться" },
+      { hash: "e5f6a7b", type: "feat",     date: "2023-12-29", msg: "первая совместная поездка в Москву" },
+      { hash: "f6a7b8c", type: "feat",     date: "2023-10-19", msg: "познакомились с родителями" },
+      { hash: "a7b8c9d", type: "feat",     date: "2023-12-31", msg: "первый совместный Новый год" },
+      { hash: "b8c9d0e", type: "feat",     date: "2024-02-14", msg: "первое 14 февраля вместе" },
+      
+
+      
+      // refactor — изменения привычек
+	  { hash: "d2e3f4a", type: "refactor", date: "2023-09-01", msg: "отвечать на 'я люблю тебя' — 'и я тебя люблю'" },      { hash: "a5b6c7d", type: "refactor", date: "2025-10-16", msg: "2 года: прошли ретроспективу отношений" },
+
+      // docs — важные слова
+      { hash: "b6c7d8e", type: "docs",     date: "2023-10-21", msg: "первое 'я тебя люблю'" },
+      { hash: "c7d8e9f", type: "docs",     date: "2024-10-16", msg: "README.md: год вместе" },
+      { hash: "e9f0a1b", type: "docs",     date: "2025-10-16", msg: "CHANGELOG: 2 года — что изменилось" },
+
+      // release + merge — финал
+      { hash: "d9e0f1a", type: "docs",     date: "2026-10-16", msg: "release: v3.0 (three years)" },
+      { hash: "f0a1b2c", type: "merge",    date: "2026-10-16", msg: "branch 'future' → 'together_forever'" },
+    ];
+
+    // ═══════════════════════════════════════════════════════
+    //  2. ЛОГИКА — обычно не трогаешь
+    // ═══════════════════════════════════════════════════════
+
+    // Счётчик коммитов
+    document.getElementById("commits-count").textContent = commits.length;
+
+    // Счётчик дней
+    const start = new Date(START_DATE);
+    const today = new Date();
+    const days = Math.floor((today - start) / (1000 * 60 * 60 * 24));
+    document.getElementById("days-count").textContent = days;
+
+    // Рендер коммитов
+    const list = document.getElementById("commit-list");
+    const sorted = [...commits].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    for (const c of sorted) {
+      const li = document.createElement("li");
+      li.className = "commit";
+      const isRelease = c.msg.startsWith("release:");
+      li.innerHTML = `
+        <div class="commit-icon ${c.type}">${iconFor(c.type)}</div>
+        <div class="commit-body">
+          <div class="commit-msg">
+            ${isRelease ? '<span class="tag">🏷 v3.0</span>' : ''}
+            <span class="commit-type ${c.type}">${c.type}:</span>
+            ${c.msg}
+          </div>
+          <div class="commit-meta">
+            <span class="hash">${c.hash}</span> ·
+            <span>${formatDate(c.date)}</span>
+          </div>
+        </div>
+      `;
+      list.appendChild(li);
+    }
+
+    function iconFor(type) {
+      return {
+        feat: "✨", chore: "🧹",
+        refactor: "♻️", docs: "📝", merge: "🎉"
+      }[type] || "•";
+    }
+
+    function formatDate(iso) {
+      const d = new Date(iso);
+      return d.toLocaleDateString("ru-RU", { day: "2-digit", month: "short", year: "numeric" });
+    }
+
+    // Contribution grid — 52 недели × 7 дней
+    const grid = document.getElementById("contrib-grid");
+    const startYear = new Date(START_DATE).getFullYear();
+    const totalDays = Math.min(days, 365);
+
+    for (let i = 0; i < 371; i++) {
+      const cell = document.createElement("span");
+      cell.className = "cell";
+      if (i < totalDays) {
+        const lvl = (i % 4) + 1;
+        cell.classList.add("lvl-" + lvl);
+      } else {
+        cell.classList.add("lvl-0");
+      }
+      grid.appendChild(cell);
+    }
+  </script>
+</body>
+</html>
