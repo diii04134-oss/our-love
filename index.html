@@ -15,6 +15,61 @@
       margin-top: 10px;
     }
   </style>
+  <style>
+  /* Модальное окно со скриншотом */
+  .modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    cursor: zoom-out;
+    animation: fadeIn 0.15s ease;
+  }
+  .modal.open { display: flex; }
+  .modal img {
+    max-width: 90vw;
+    max-height: 90vh;
+    border-radius: 8px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    cursor: default;
+  }
+  .modal .close {
+    position: absolute;
+    top: 20px;
+    right: 28px;
+    color: #c9d1d9;
+    font-size: 32px;
+    line-height: 1;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .modal .close:hover { color: #fff; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Подсказка, что коммит кликабельный */
+  .commit.clickable .commit-msg {
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+  .commit.clickable .commit-msg:hover {
+    color: #58a6ff;
+  }
+  .commit.clickable .commit-msg::after {
+    content: " 📎";
+    font-size: 12px;
+    opacity: 0.6;
+  }
+</style>
 </head>
 <body>
   <header class="repo-header">
@@ -146,26 +201,52 @@
     const sorted = [...visible].sort((a, b) => new Date(b.date) - new Date(a.date));
 
     for (const c of sorted) {
-      const li = document.createElement("li");
-      li.className = "commit";
-      const isRelease = c.msg.startsWith("release:");
-      li.innerHTML = `
-        <div class="commit-icon ${c.type}">${iconFor(c.type)}</div>
-        <div class="commit-body">
-          <div class="commit-msg">
-            ${isRelease ? '<span class="tag">🏷 v3.0</span>' : ''}
-            <span class="commit-type ${c.type}">${c.type}:</span>
-            ${c.msg}
-          </div>
-          <div class="commit-meta">
-            <span class="hash">${c.hash}</span> ·
-            <span>${formatDate(c.date)}</span>
-          </div>
-          ${c.img ? `<img class="shot" src="${c.img}" alt="" loading="lazy" onerror="this.remove()">` : ''}
-        </div>
-      `;
-      list.appendChild(li);
-    }
+  const li = document.createElement("li");
+  li.className = "commit" + (c.photo ? " clickable" : "");
+  const isRelease = c.msg.startsWith("release:");
+
+  li.innerHTML = `
+    <div class="commit-icon ${c.type}">${iconFor(c.type)}</div>
+    <div class="commit-body">
+      <div class="commit-msg" ${c.photo ? `data-photo="${c.photo}"` : ""}>
+        ${isRelease ? '<span class="tag">🏷 v3.0</span>' : ''}
+        <span class="commit-type ${c.type}">${c.type}:</span>
+        ${c.msg}
+      </div>
+      <div class="commit-meta">
+        <span class="hash">${c.hash}</span> ·
+        <span>${formatDate(c.date)}</span>
+      </div>
+    </div>
+  `;
+  list.appendChild(li);
+}
+
+// Делегирование кликов по кликабельным коммитам
+document.getElementById("commit-list").addEventListener("click", (e) => {
+  const msg = e.target.closest(".commit-msg[data-photo]");
+  if (!msg) return;
+  openModal(msg.dataset.photo);
+});
+
+// Модальное окно
+const modal = document.getElementById("modal");
+const modalImg = document.getElementById("modal-img");
+
+function openModal(src) {
+  modalImg.src = src;
+  modal.classList.add("open");
+}
+function closeModal() {
+  modal.classList.remove("open");
+  modalImg.src = "";
+}
+modal.addEventListener("click", (e) => {
+  if (e.target === modal) closeModal();
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeModal();
+});
 
     function iconFor(type) {
       return {
@@ -211,5 +292,9 @@
       grid.appendChild(cell);
     }
   </script>
+  <div class="modal" id="modal">
+  <button class="close" onclick="closeModal()">×</button>
+  <img id="modal-img" src="" alt="">
+</div>
 </body>
 </html>
