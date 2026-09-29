@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>our-love · commits</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Скриншоты и фото внутри коммитов */
+    .shot {
+      display: block;
+      max-width: 100%;
+      max-height: 320px;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
   <header class="repo-header">
@@ -74,48 +84,66 @@
 
     const START_DATE = "2023-10-16"; // дата начала отношений
 
+    // Чтобы добавить картинку к коммиту, допиши поле img:
+    //   { hash: "...", type: "feat", date: "...", msg: "...", img: "img/first-date.jpg" }
+    // Файлы кладём в папку img/ в репозитории (имена латиницей, без пробелов).
+    //
+    // Коммиты с датой в будущем скрыты и появятся сами в свой день.
+
     const commits = [
       // feat — хорошие события
-      { hash: "a1b2c3d", type: "feat",     date: "2023-09-01", msg: "initial commit: познакомились" },
-      { hash: "b2c3d4e", type: "feat",     date: "2023-10-14", msg: "первое свидание" },
-      { hash: "c3d4e5f", type: "feat",     date: "2023-10-21", msg: "первый поцелуй на набережной" },
-      { hash: "d4e5f6a", type: "feat",     date: "2023-10-16", msg: "официально начали встречаться" },
-      { hash: "e5f6a7b", type: "feat",     date: "2023-12-29", msg: "первая совместная поездка в Москву" },
-      { hash: "f6a7b8c", type: "feat",     date: "2023-10-19", msg: "познакомились с родителями" },
-      { hash: "a7b8c9d", type: "feat",     date: "2023-12-31", msg: "первый совместный Новый год" },
-      { hash: "b8c9d0e", type: "feat",     date: "2024-02-14", msg: "первое 14 февраля вместе" },
-      
+      { hash: "a1b2c3d", type: "feat", date: "2023-09-01", msg: "initial commit: познакомились" },
+      { hash: "b2c3d4e", type: "feat", date: "2023-10-14", msg: "первое свидание" },
+      { hash: "c3d4e5f", type: "feat", date: "2023-10-21", msg: "первый поцелуй на набережной" },
+      { hash: "d4e5f6a", type: "feat", date: "2023-10-16", msg: "официально начали встречаться" },
+      { hash: "e5f6a7b", type: "feat", date: "2023-12-29", msg: "первая совместная поездка в Москву" },
+      { hash: "f6a7b8c", type: "feat", date: "2023-10-19", msg: "познакомились с родителями" },
+      { hash: "a7b8c9d", type: "feat", date: "2023-12-31", msg: "первый совместный Новый год" },
+      { hash: "b8c9d0e", type: "feat", date: "2024-02-14", msg: "первое 14 февраля вместе" },
 
-      
       // refactor — изменения привычек
-	  { hash: "d2e3f4a", type: "refactor", date: "2023-09-01", msg: "отвечать на 'я люблю тебя' — 'и я тебя люблю'" },      { hash: "a5b6c7d", type: "refactor", date: "2025-10-16", msg: "2 года: прошли ретроспективу отношений" },
+      // TODO: проверь дату — сейчас это день знакомства, а первое «я тебя люблю» было 21 октября
+      { hash: "d2e3f4a", type: "refactor", date: "2023-09-01", msg: "отвечать на 'я люблю тебя' — 'и я тебя люблю'" },
+      { hash: "a5b6c7d", type: "refactor", date: "2025-10-16", msg: "2 года: прошли ретроспективу отношений" },
 
       // docs — важные слова
-      { hash: "b6c7d8e", type: "docs",     date: "2023-10-21", msg: "первое 'я тебя люблю'" },
-      { hash: "c7d8e9f", type: "docs",     date: "2024-10-16", msg: "README.md: год вместе" },
-      { hash: "e9f0a1b", type: "docs",     date: "2025-10-16", msg: "CHANGELOG: 2 года — что изменилось" },
+      { hash: "b6c7d8e", type: "docs", date: "2023-10-21", msg: "первое 'я тебя люблю'" },
+      { hash: "c7d8e9f", type: "docs", date: "2024-10-16", msg: "README.md: год вместе" },
+      { hash: "e9f0a1b", type: "docs", date: "2025-10-16", msg: "CHANGELOG: 2 года — что изменилось" },
 
-      // release + merge — финал
-      { hash: "d9e0f1a", type: "docs",     date: "2026-10-16", msg: "release: v3.0 (three years)" },
-      { hash: "f0a1b2c", type: "merge",    date: "2026-10-16", msg: "branch 'future' → 'together_forever'" },
+      // release + merge — финал (появятся 16 октября 2026)
+      { hash: "d9e0f1a", type: "docs",  date: "2026-10-16", msg: "release: v3.0 (three years)" },
+      { hash: "f0a1b2c", type: "merge", date: "2026-10-16", msg: "branch 'future' → 'together_forever'" },
     ];
 
     // ═══════════════════════════════════════════════════════
     //  2. ЛОГИКА — обычно не трогаешь
     // ═══════════════════════════════════════════════════════
 
+    const today = new Date();
+
+    // Локальная дата в виде YYYY-MM-DD (без сдвига часовых поясов)
+    function dateKey(d) {
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${d.getFullYear()}-${m}-${day}`;
+    }
+    const todayKey = dateKey(today);
+
+    // Показываем только коммиты, которые уже «случились»
+    const visible = commits.filter(c => c.date <= todayKey);
+
     // Счётчик коммитов
-    document.getElementById("commits-count").textContent = commits.length;
+    document.getElementById("commits-count").textContent = visible.length;
 
     // Счётчик дней
     const start = new Date(START_DATE);
-    const today = new Date();
-    const days = Math.floor((today - start) / (1000 * 60 * 60 * 24));
+    const days = Math.max(0, Math.floor((today - start) / (1000 * 60 * 60 * 24)));
     document.getElementById("days-count").textContent = days;
 
     // Рендер коммитов
     const list = document.getElementById("commit-list");
-    const sorted = [...commits].sort((a, b) => new Date(b.date) - new Date(a.date));
+    const sorted = [...visible].sort((a, b) => new Date(b.date) - new Date(a.date));
 
     for (const c of sorted) {
       const li = document.createElement("li");
@@ -133,6 +161,7 @@
             <span class="hash">${c.hash}</span> ·
             <span>${formatDate(c.date)}</span>
           </div>
+          ${c.img ? `<img class="shot" src="${c.img}" alt="" loading="lazy" onerror="this.remove()">` : ''}
         </div>
       `;
       list.appendChild(li);
@@ -150,20 +179,35 @@
       return d.toLocaleDateString("ru-RU", { day: "2-digit", month: "short", year: "numeric" });
     }
 
-    // Contribution grid — 52 недели × 7 дней
+    // Contribution grid — 53 недели × 7 дней, последний квадрат = сегодня.
+    // Дни с коммитами всегда самые яркие, остальные дни после начала отношений
+    // заполняются псевдослучайно (но одинаково при каждой загрузке).
     const grid = document.getElementById("contrib-grid");
-    const startYear = new Date(START_DATE).getFullYear();
-    const totalDays = Math.min(days, 365);
+    const commitDays = new Set(visible.map(c => c.date));
+    const startKey = START_DATE;
 
-    for (let i = 0; i < 371; i++) {
-      const cell = document.createElement("span");
-      cell.className = "cell";
-      if (i < totalDays) {
-        const lvl = (i % 4) + 1;
-        cell.classList.add("lvl-" + lvl);
-      } else {
-        cell.classList.add("lvl-0");
+    function seeded(n) {
+      const x = Math.sin(n * 12.9898) * 43758.5453;
+      return x - Math.floor(x);
+    }
+
+    const TOTAL_CELLS = 371;
+    for (let i = 0; i < TOTAL_CELLS; i++) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - (TOTAL_CELLS - 1 - i));
+      const key = dateKey(d);
+
+      let lvl = 0;
+      if (commitDays.has(key)) {
+        lvl = 4;
+      } else if (key >= startKey) {
+        const r = seeded(i + 1);
+        lvl = r < 0.3 ? 0 : r < 0.6 ? 1 : r < 0.82 ? 2 : r < 0.94 ? 3 : 4;
       }
+
+      const cell = document.createElement("span");
+      cell.className = "cell lvl-" + lvl;
+      cell.title = key;
       grid.appendChild(cell);
     }
   </script>
