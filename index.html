@@ -5,6 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>our-love · commits</title>
   <link rel="stylesheet" href="style.css">
+
+  <!-- Проверяем вход ДО отрисовки, чтобы сайт не мигал -->
+  <script>
+    try {
+      if (localStorage.getItem("our-love-unlocked") !== "1") {
+        document.documentElement.classList.add("locked");
+      }
+    } catch (e) {
+      document.documentElement.classList.add("locked");
+    }
+  </script>
+
   <style>
     /* Скриншоты и фото внутри коммитов */
     .shot {
@@ -15,63 +27,142 @@
       margin-top: 10px;
     }
   </style>
+
   <style>
-  /* Модальное окно со скриншотом */
-  .modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.85);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-    cursor: zoom-out;
-    animation: fadeIn 0.15s ease;
-  }
-  .modal.open { display: flex; }
-  .modal img {
-    max-width: 90vw;
-    max-height: 90vh;
-    border-radius: 8px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-    cursor: default;
-  }
-  .modal .close {
-    position: absolute;
-    top: 20px;
-    right: 28px;
-    color: #c9d1d9;
-    font-size: 32px;
-    line-height: 1;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-family: inherit;
-  }
-  .modal .close:hover { color: #fff; }
+    /* Экран входа */
+    .locked body > *:not(#gate) { display: none !important; }
+    html:not(.locked) #gate { display: none; }
 
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
+    .gate {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: #0d1117;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .gate-box {
+      width: 100%;
+      max-width: 360px;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 32px 28px;
+      text-align: center;
+      color: #c9d1d9;
+    }
+    .gate-icon { font-size: 36px; margin-bottom: 8px; }
+    .gate-box h1 { font-size: 20px; margin: 0 0 8px; }
+    .gate-box p { font-size: 14px; color: #8b949e; margin: 0 0 20px; }
+    .gate-box input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px 12px;
+      font-size: 18px;
+      text-align: center;
+      letter-spacing: 2px;
+      color: #c9d1d9;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      outline: none;
+      font-family: inherit;
+    }
+    .gate-box input:focus { border-color: #58a6ff; }
+    .gate-box button {
+      margin-top: 12px;
+      width: 100%;
+      padding: 10px;
+      font-size: 15px;
+      color: #fff;
+      background: #238636;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .gate-box button:hover { background: #2ea043; }
+    .gate-error { min-height: 20px; margin-top: 12px; font-size: 13px; color: #f85149; }
+    .gate-box.shake { animation: shake 0.35s; }
+    @keyframes shake {
+      25% { transform: translateX(-8px); }
+      75% { transform: translateX(8px); }
+    }
+  </style>
 
-  /* Подсказка, что коммит кликабельный */
-  .commit.clickable .commit-msg {
-    cursor: pointer;
-    transition: color 0.15s;
-  }
-  .commit.clickable .commit-msg:hover {
-    color: #58a6ff;
-  }
-  .commit.clickable .commit-msg::after {
-    content: " 📎";
-    font-size: 12px;
-    opacity: 0.6;
-  }
-</style>
+  <style>
+    /* Модальное окно со скриншотом */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      cursor: zoom-out;
+      animation: fadeIn 0.15s ease;
+    }
+    .modal.open { display: flex; }
+    .modal img {
+      max-width: 90vw;
+      max-height: 90vh;
+      border-radius: 8px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+      cursor: default;
+    }
+    .modal .close {
+      position: absolute;
+      top: 20px;
+      right: 28px;
+      color: #c9d1d9;
+      font-size: 32px;
+      line-height: 1;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .modal .close:hover { color: #fff; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Подсказка, что коммит кликабельный */
+    .commit.clickable .commit-msg {
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+    .commit.clickable .commit-msg:hover {
+      color: #58a6ff;
+    }
+    .commit.clickable .commit-msg::after {
+      content: " 📎";
+      font-size: 12px;
+      opacity: 0.6;
+    }
+  </style>
 </head>
 <body>
+
+  <!-- Экран входа -->
+  <div id="gate" class="gate">
+    <form id="gate-form" class="gate-box" autocomplete="off">
+      <div class="gate-icon">🔒</div>
+      <h1>our-love</h1>
+      <p>Приватный репозиторий. Введи дату, с которой всё началось.</p>
+      <input id="gate-input" type="text" inputmode="numeric"
+             placeholder="ДД.ММ.ГГГГ" maxlength="10">
+      <button type="submit">Открыть</button>
+      <div id="gate-error" class="gate-error"></div>
+    </form>
+  </div>
+
   <header class="repo-header">
     <div class="repo-title">
       <span class="repo-owner">us</span> / <span class="repo-name">our-love</span>
@@ -132,6 +223,12 @@
     <p>Контрибьюторы: <strong>ты</strong> и <strong>я</strong>.</p>
   </footer>
 
+  <!-- Модальное окно (ВАЖНО: стоит до <script>, чтобы getElementById его нашёл) -->
+  <div class="modal" id="modal">
+    <button class="close" onclick="closeModal()">×</button>
+    <img id="modal-img" src="" alt="">
+  </div>
+
   <script>
     // ═══════════════════════════════════════════════════════
     //  1. ДАННЫЕ — меняй здесь
@@ -162,7 +259,7 @@
       { hash: "a5b6c7d", type: "refactor", date: "2025-10-16", msg: "2 года: прошли ретроспективу отношений" },
 
       // docs — важные слова
-      { hash: "b6c7d8e", type: "docs", date: "2023-10-21", msg: "первое 'я тебя люблю'", img: "images/first-i-love-u.jpg" },
+      { hash: "b6c7d8e", type: "docs", date: "2023-10-21", msg: "первое 'я тебя люблю'", img: "img/first-i-love-u.jpg" },
       { hash: "c7d8e9f", type: "docs", date: "2024-10-16", msg: "README.md: год вместе" },
       { hash: "e9f0a1b", type: "docs", date: "2025-10-16", msg: "CHANGELOG: 2 года — что изменилось" },
 
@@ -174,6 +271,42 @@
     // ═══════════════════════════════════════════════════════
     //  2. ЛОГИКА — обычно не трогаешь
     // ═══════════════════════════════════════════════════════
+
+    // ───── Вход по дате ─────
+    (function () {
+      const SECRET = "16102023"; // ДДММГГГГ
+      const gateForm = document.getElementById("gate-form");
+      const gateInput = document.getElementById("gate-input");
+      const gateError = document.getElementById("gate-error");
+
+      // Автоматически ставим точки: 16102023 → 16.10.2023
+      gateInput.addEventListener("input", () => {
+        const d = gateInput.value.replace(/\D/g, "").slice(0, 8);
+        let out = d.slice(0, 2);
+        if (d.length > 2) out += "." + d.slice(2, 4);
+        if (d.length > 4) out += "." + d.slice(4);
+        gateInput.value = out;
+        gateError.textContent = "";
+      });
+
+      gateForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const digits = gateInput.value.replace(/\D/g, "");
+        if (digits === SECRET) {
+          try { localStorage.setItem("our-love-unlocked", "1"); } catch (err) {}
+          document.documentElement.classList.remove("locked");
+        } else {
+          gateError.textContent = "Не та дата. Подумай ещё 💭";
+          gateForm.classList.remove("shake");
+          void gateForm.offsetWidth; // перезапуск анимации
+          gateForm.classList.add("shake");
+        }
+      });
+
+      if (document.documentElement.classList.contains("locked")) {
+        gateInput.focus();
+      }
+    })();
 
     const today = new Date();
 
@@ -196,58 +329,6 @@
     const days = Math.max(0, Math.floor((today - start) / (1000 * 60 * 60 * 24)));
     document.getElementById("days-count").textContent = days;
 
-    // Рендер коммитов
-    const list = document.getElementById("commit-list");
-    const sorted = [...visible].sort((a, b) => new Date(b.date) - new Date(a.date));
-
-    for (const c of sorted) {
-  const li = document.createElement("li");
-  li.className = "commit" + (c.photo ? " clickable" : "");
-  const isRelease = c.msg.startsWith("release:");
-
-  li.innerHTML = `
-    <div class="commit-icon ${c.type}">${iconFor(c.type)}</div>
-    <div class="commit-body">
-      <div class="commit-msg" ${c.photo ? `data-photo="${c.photo}"` : ""}>
-        ${isRelease ? '<span class="tag">🏷 v3.0</span>' : ''}
-        <span class="commit-type ${c.type}">${c.type}:</span>
-        ${c.msg}
-      </div>
-      <div class="commit-meta">
-        <span class="hash">${c.hash}</span> ·
-        <span>${formatDate(c.date)}</span>
-      </div>
-    </div>
-  `;
-  list.appendChild(li);
-}
-
-// Делегирование кликов по кликабельным коммитам
-document.getElementById("commit-list").addEventListener("click", (e) => {
-  const msg = e.target.closest(".commit-msg[data-photo]");
-  if (!msg) return;
-  openModal(msg.dataset.photo);
-});
-
-// Модальное окно
-const modal = document.getElementById("modal");
-const modalImg = document.getElementById("modal-img");
-
-function openModal(src) {
-  modalImg.src = src;
-  modal.classList.add("open");
-}
-function closeModal() {
-  modal.classList.remove("open");
-  modalImg.src = "";
-}
-modal.addEventListener("click", (e) => {
-  if (e.target === modal) closeModal();
-});
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") closeModal();
-});
-
     function iconFor(type) {
       return {
         feat: "✨", chore: "🧹",
@@ -259,6 +340,58 @@ document.addEventListener("keydown", (e) => {
       const d = new Date(iso);
       return d.toLocaleDateString("ru-RU", { day: "2-digit", month: "short", year: "numeric" });
     }
+
+    // Рендер коммитов
+    const list = document.getElementById("commit-list");
+    const sorted = [...visible].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    for (const c of sorted) {
+      const li = document.createElement("li");
+      li.className = "commit" + (c.img ? " clickable" : "");
+      const isRelease = c.msg.startsWith("release:");
+
+      li.innerHTML = `
+        <div class="commit-icon ${c.type}">${iconFor(c.type)}</div>
+        <div class="commit-body">
+          <div class="commit-msg" ${c.img ? `data-photo="${c.img}"` : ""}>
+            ${isRelease ? '<span class="tag">🏷 v3.0</span>' : ''}
+            <span class="commit-type ${c.type}">${c.type}:</span>
+            ${c.msg}
+          </div>
+          <div class="commit-meta">
+            <span class="hash">${c.hash}</span> ·
+            <span>${formatDate(c.date)}</span>
+          </div>
+        </div>
+      `;
+      list.appendChild(li);
+    }
+
+    // Делегирование кликов по кликабельным коммитам
+    list.addEventListener("click", (e) => {
+      const msg = e.target.closest(".commit-msg[data-photo]");
+      if (!msg) return;
+      openModal(msg.dataset.photo);
+    });
+
+    // Модальное окно
+    const modal = document.getElementById("modal");
+    const modalImg = document.getElementById("modal-img");
+
+    function openModal(src) {
+      modalImg.src = src;
+      modal.classList.add("open");
+    }
+    function closeModal() {
+      modal.classList.remove("open");
+      modalImg.src = "";
+    }
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeModal();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeModal();
+    });
 
     // Contribution grid — 53 недели × 7 дней, последний квадрат = сегодня.
     // Дни с коммитами всегда самые яркие, остальные дни после начала отношений
@@ -292,9 +425,5 @@ document.addEventListener("keydown", (e) => {
       grid.appendChild(cell);
     }
   </script>
-  <div class="modal" id="modal">
-  <button class="close" onclick="closeModal()">×</button>
-  <img id="modal-img" src="" alt="">
-</div>
 </body>
 </html>
