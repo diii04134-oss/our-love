@@ -379,9 +379,15 @@
     const modalImg = document.getElementById("modal-img");
 
     function openModal(src) {
-      modalImg.src = src;
-      modal.classList.add("open");
-    }
+  modalImg.onerror = () => {
+    modalImg.removeAttribute("src");
+    modalImg.alt = "Не найдено: " + src;
+    modalImg.style.cssText = "color:#fff;padding:16px;font-size:16px";
+  };
+  modalImg.onload = () => { modalImg.style.cssText = ""; };
+  modalImg.src = src;
+  modal.classList.add("open");
+}
     function closeModal() {
       modal.classList.remove("open");
       modalImg.src = "";
